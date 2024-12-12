@@ -13,14 +13,25 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
     password: "",
   });
 
+  // Guest login handler
+  const handleGuestLogin = () => {
+    const guestToken =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEzYTA0NTc2LWJjNTktNDMzZi05ZmJkLTYzYmE3ZTcwNDEzMCJ9.Kl9RIFZAIQkvuIGdJZoG-0akiQgFuug956vvqz1KXCQ"; // Replace with your actual token
+    localStorage.setItem("token", guestToken);
+    
+    navigate("/blogs");
+  };
+
+  // Send request for signup/signin
   async function sendRequest() {
     try {
       const res = await axios.post(
-        `${BACKEND_URL}/api/v1/user/${type == "signup" ? "signup" : "signin"}`,
+        `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
         postInputs
       );
       const jwt = res.data.jwt;
       localStorage.setItem("token", jwt);
+      console.log({ jwt });
       navigate("/blogs");
     } catch (err) {
       alert("Error : Request failed");
@@ -41,7 +52,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 : "Don't have an account?"}{" "}
               <Link
                 className="font-semibold underline text-black"
-                to={type === "signup" ? "/signin" : "/signup"}
+                to={type === "signup" ? "/signin" : "/"}
               >
                 {type === "signup" ? "Sign in" : "Sign up"}
               </Link>
@@ -83,6 +94,23 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                 <span className="relative">
                   {type === "signup" ? "Sign up" : "Sign in"}
                 </span>
+              </span>
+              <span
+                className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                data-rounded="rounded-lg"
+              ></span>
+            </button>
+
+            {/* Guest login button */}
+            <button
+              onClick={handleGuestLogin}
+              type="button"
+              className="relative inline-block text-lg group mt-4"
+            >
+              <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                <span className="absolute left-0 w-[28rem] h-96 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                <span className="relative">Guest Login</span>
               </span>
               <span
                 className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
